@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+
+{% block title %}Login{% endblock %}
+
+{% block content %}
+<h2>Login</h2>
+<form id="login-form">
+    <label for="username">Username:</label>
+    <input type="text" id="username" name="username" required>
+    <label for="password">Password:</label>
+    <input type="password" id="password" name="password" required>
+    <button type="submit">Login</button>
+</form>
+<p id="login-message"></p>
+
+<script>
+    const form = document.getElementById('login-form');
+    form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const data = {
+            username: form.username.value,
+            password: form.password.value,
+        };
+
+        const response = await fetch('http://127.0.0.1:8000/api/login/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(data),
+        });
+
+        const result = await response.json();
+        const message = document.getElementById('login-message');
+        if (response.ok) {
+            message.textContent = 'Login successful! Token: ' + result.token;
+            message.style.color = 'green';
+        } else {
+            message.textContent = 'Error: ' + result.message;
+            message.style.color = 'red';
+        }
+    });
+</script>
+{% endblock %}
